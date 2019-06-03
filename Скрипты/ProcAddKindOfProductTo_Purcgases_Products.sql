@@ -1,3 +1,4 @@
+-- Добавить продукт и количество в корзину.
 Create procedure AddKindOfProductTo_Purchases_Products
 	@ID_Shop as int,
 	@Cashbox as varchar(100),
