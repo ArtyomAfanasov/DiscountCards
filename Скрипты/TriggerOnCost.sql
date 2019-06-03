@@ -30,10 +30,6 @@ BEGIN
 	select @ID_CardFromPurchase = FK_ID_Card from Purchases 
 		where Purchases.ID_Purchase = @FK_ID_Purchase		 
 
-	--select @ID_CardFromPurchase = ID_Card from Purchases join Cards
-	--	on Purchases.FK_ID_Card = Cards.ID_Card 
-	--		where Purchases.ID_Purchase = @FK_ID_Purchase
-
 	select @currentPoints = AccumulatedPoints from Cards  
 		where ID_Card = @ID_CardFromPurchase		
 		
