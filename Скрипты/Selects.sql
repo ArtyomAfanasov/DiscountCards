@@ -31,7 +31,7 @@ select Count(ID_Purchase) from Purchases
 select ID_Purchase from Purchases 
 	where FK_ID_Shop = 7 And Cost > 200
 
--- Имя человека, сделавшего максимальный вклад в компанию. Горжусь :)
+-- Имя человека, сделавшего максимальный вклад в компанию. Можно было бы сделать через as.
 --================================================================================================================
 create view ToMaxCost as
 	select ID_Card, Sum(Cost) as MoneyForCard from Purchases 
@@ -45,7 +45,7 @@ select FirstName, LastName from Clients
 		where Cards.ID_Card = (select ID_Card from ToMaxCost 
 									where MoneyForCard = (select Max(MoneyForCard) from ToMaxCost))
 
-
+		-- отладка
 		select ID_Card from ToMaxCost 
 			where MoneyForCard = (select Max(MoneyForCard) from ToMaxCost)
 	
@@ -57,25 +57,25 @@ select FirstName, LastName from Clients
 		-- Тоня Горная
 		Execute AddPurchase @DataOfPurchase='2019-06-04',@FK_ID_Card=9,@FK_ID_Shop=6,@NumberOfCashbox='First', @ForDescription=null
 		execute AddKindOfProductTo_Purchases_Products @ID_Shop=6, @Cashbox='First', @FK_ID_Product=1, @AmountOfProduct=10000, @ForDescription=null
--- Отладка.
 --================================================================================================================
 
--- Not in. ID_Card, которые входят в покупки, в которых больше 10000 рублей.
+-- ID_Card, которые входят в покупки, в которых больше 10000 рублей.
 select ID_Card from Cards 
 	where ID_Card in (select FK_ID_Card from Purchases 
 							where Cost > 10000)
 			
-			-- отладка
-			select FK_ID_Card, Cost from Purchases 
-							where Cost > 10000		
-
+		-- отладка
+		select FK_ID_Card, Cost from Purchases 
+						where Cost > 10000		
+		-- отладка
 		-- select по этим картам совершались покупки.
 		select FK_ID_Card from Purchases
 			group by FK_ID_Card
 
--- exist. Существуют ли покупки по карте клиента с номером 14161. Вывести имя клиента. + С ВНЕШНИМ СОЕДИНЕНИЕМ! :)
+-- exist. Существуют ли покупки по карте клиента с номером 14161. Вывести имя клиента.
+			-- для проверки работы
 			EXECUTE AddNewCard @DataOfReceiving='2019-06-04',@CardNumber='14161', @ForDescription=null,@FirstName='Саша', @LastName='Безпокупок',@Phone='881212878638',@Email='new9m2e@mail.ru'
-
+			-- для проверки работы
 			select ID_Card from Cards where CardNumber = 14161	
 
 select FirstName, LastName from Clients
@@ -83,7 +83,7 @@ select FirstName, LastName from Clients
 	left join Purchases on Cards.ID_Card = Purchases.FK_ID_Card
 		where Cards.CardNumber = 14161 and not exists (select FK_ID_Card from Purchases
 							where Purchases.FK_ID_Card = (select ID_Card from Cards where CardNumber = 14161))
-	
+			-- для проверки работы
 			select ID_Shop from Shops
 				where not exists (select * from Shops where ID_Shop >7) and ID_Shop = 5
 
